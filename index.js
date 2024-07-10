@@ -23,8 +23,8 @@ app.post('/api/generate-image',async (req,res)=>{
         'API-Key': process.env.API_KEY
       },
       body: JSON.stringify({
-        input_face: uploadedImage,
-        input_image: targetImage
+        "input_face": uploadedImage,
+        "input_image": targetImage
       })
     })
     
