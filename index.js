@@ -32,12 +32,12 @@ app.post('/api/generate-image',async (req,res)=>{
       throw Error('Failed to create image')
     }
     
-    const {id} = await apiResponse.json();
-    console.log('Image Created: ', id)
+    const resBody = await apiResponse.json();
+    console.log('Image Created: ', resBody.id)
     
     while(isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${id}`, {
+      const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${resBody.id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ app.post('/api/generate-image',async (req,res)=>{
       if(!generatedRes.ok){
         const resError = await generatedRes.json()
         console.log(resError)
-        throw Error(`Failed to poll:`)
+        throw Error(`Failed to poll`)
       }
       const pollingRes = await generatedRes.json();
       if(pollingRes.status === 'SUCCESS'){
