@@ -29,6 +29,8 @@ app.post('/api/generate-image',async (req,res)=>{
     })
     
     if(!apiResponse.ok){
+      const error = await apiResponse.json()
+      console.log(error)
       throw Error('Failed to create image')
     }
     
