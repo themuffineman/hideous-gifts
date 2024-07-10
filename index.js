@@ -14,7 +14,7 @@ app.post('/api/generate-image',async (req,res)=>{
   let generatedImage;
   try{
     const {uploadedImage, targetImage} = req.body;
-    console.log('Received Request')
+    console.log('Received Request:', uploadedImage, targetImage)
     
     const apiResponse = await fetch('https://api.imagepipeline.io/faceswap/v1', {
       method: 'POST',
