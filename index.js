@@ -37,13 +37,21 @@ app.post('/api/generate-image',async (req,res)=>{
     
     while(isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${id}`)
+      const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${id}`,{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'API-Key': process.env.API_KEY
+        }
+      })
       if(!generatedRes.ok){
-        throw Error(`Failed to poll: ${generatedRes.status}`)
+        const resError = await generatedRes.json()
+        console.log(resError)
+        throw Error(`Failed to poll:`)
       }
       const pollingRes = await generatedRes.json();
       if(pollingRes.status === 'SUCCESS'){
-        generatedImage = pollingRes.downloadUrls[0]
+        generatedImage = pollingRes.download_urls[0]
         isImageDone = true
         console.log('Polling Success:', generatedImage)
       }
@@ -52,6 +60,7 @@ app.post('/api/generate-image',async (req,res)=>{
     return res.json({url: generatedImage})
   }catch(err){
     console.error(err.message)
+    return res.status(500).json({error: err.message})
   }
 })
 app.post('/api/upscale-image', async (req, res)=>{
@@ -82,7 +91,13 @@ app.post('/api/upscale-image', async (req, res)=>{
 
     while(isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const generatedRes = await fetch(`https://api.imagepipeline.io/superresolution/v1/status/${id}`)
+      const generatedRes = await fetch(`https://api.imagepipeline.io/superresolution/v1/status/${id}`{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'API-Key': process.env.API_KEY
+        }
+      })
       if(!generatedRes.ok){
         throw Error('Failed to poll')
       }
