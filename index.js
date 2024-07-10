@@ -35,7 +35,7 @@ app.post('/api/generate-image',async (req,res)=>{
     const {id} = await apiResponse.json();
     console.log('Image Created: ', id)
     
-    while(!isImageDone !== true){
+    while(isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
       const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${id}`)
       if(!generatedRes.ok){
@@ -45,7 +45,7 @@ app.post('/api/generate-image',async (req,res)=>{
       if(pollingRes.status === 'SUCCESS'){
         generatedImage = pollingRes.downloadUrls[0]
         isImageDone = true
-        console.log('Polling Success:', genereatedImage)
+        console.log('Polling Success:', generatedImage)
       }
     }
     
@@ -80,7 +80,7 @@ app.post('/api/upscale-image', async (req, res)=>{
 
     const {id} = await apiResponse.json();
 
-    while(!isImageDone !== true){
+    while(isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
       const generatedRes = await fetch(`https://api.imagepipeline.io/superresolution/v1/status/${id}`)
       if(!generatedRes.ok){
