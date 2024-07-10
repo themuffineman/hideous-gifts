@@ -14,6 +14,7 @@ app.post('/api/generate-image',async (req,res)=>{
   let generatedImage;
   try{
     const {uploadedImage, targetImage} = req.body;
+    console.log('Received Request')
     
     const apiResponse = await fetch('https://api.imagepipeline.io/faceswap/v1', {
       method: 'POST',
@@ -32,6 +33,7 @@ app.post('/api/generate-image',async (req,res)=>{
     }
     
     const {id} = await apiResponse.json();
+    console.log('Image Created: ', id)
     
     while(!isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -43,6 +45,7 @@ app.post('/api/generate-image',async (req,res)=>{
       if(pollingRes.status === 'SUCCESS'){
         generatedImage = pollingRes.downloadUrls[0]
         isImageDone = true
+        console.log('Polling Success:', genereatedImage)
       }
     }
     
