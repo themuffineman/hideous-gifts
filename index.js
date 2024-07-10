@@ -20,11 +20,11 @@ app.post('/api/generate-image',async (req,res)=>{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'API-Key': process.env.API_KEY
+        Apikey: process.env.API_KEY
       },
       body: JSON.stringify({
-        "input_face": uploadedImage,
-        "input_image": targetImage
+        input_face: uploadedImage,
+        input_image: targetImage
       })
     })
     
@@ -43,7 +43,7 @@ app.post('/api/generate-image',async (req,res)=>{
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'API-Key': process.env.API_KEY
+          Apikey: process.env.API_KEY
         }
       })
       if(!generatedRes.ok){
@@ -76,13 +76,13 @@ app.post('/api/upscale-image', async (req, res)=>{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'API-Key': process.env.API_KEY
+        ApiKey: process.env.API_KEY
       },
       body: JSON.stringify({
-        "model_name": "RealESRGAN_x4plus",
-        "init_image": `${image}`,
-        "scale_factor": 4,
-        "tile": 150,
+        model_name : "RealESRGAN_x4plus",
+        init_image: image,
+        scale_factor: 4,
+        tile: 150,
       })
     })
 
@@ -99,7 +99,7 @@ app.post('/api/upscale-image', async (req, res)=>{
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'API-Key': process.env.API_KEY
+          ApiKey : process.env.API_KEY
         }
       })
       if(!generatedRes.ok){
