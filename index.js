@@ -39,9 +39,9 @@ app.post('/api/generate-image',async (req,res)=>{
       await new Promise(resolve => setTimeout(resolve, 2000));
       const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${id}`)
       if(!generatedRes.ok){
-        throw Error('Failed to poll')
+        throw Error(`Failed to poll: ${generatedRes.status}`)
       }
-      const pollingRes = await apiResponse.json();
+      const pollingRes = await generatedRes.json();
       if(pollingRes.status === 'SUCCESS'){
         generatedImage = pollingRes.downloadUrls[0]
         isImageDone = true
