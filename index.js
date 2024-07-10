@@ -37,7 +37,7 @@ app.post('/api/generate-image',async (req,res)=>{
     
     while(isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${id}`,{
+      const generatedRes = await fetch(`https://api.imagepipeline.io/faceswap/v1/status/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ app.post('/api/upscale-image', async (req, res)=>{
 
     while(isImageDone !== true){
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const generatedRes = await fetch(`https://api.imagepipeline.io/superresolution/v1/status/${id}`{
+      const generatedRes = await fetch(`https://api.imagepipeline.io/superresolution/v1/status/${id}`,{
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
