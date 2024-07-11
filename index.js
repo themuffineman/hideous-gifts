@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import {config} from 'dotenv';
 
 config()
@@ -124,4 +123,14 @@ app.post('/api/upscale-image', async (req, res)=>{
     console.error(err.message)
     return res.json({error: err}).status(500)
   }
+})
+app.get('/api/keep-alive', async (req, res)=>{
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  res.send('Server Alive')
+})
+app.get('/get-countries', async (req,res)=>{
+  console.log('Received Countries Request')
+  const csvFilePath ='./countryList.csv'
+  const jsonArray = await csv().fromFile(csvFilePath);
+  res.json(jsonArray);
 })
