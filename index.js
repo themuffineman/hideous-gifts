@@ -1,3 +1,4 @@
+import csv from 'csvtojson/v2'
 import express from 'express';
 import cors from 'cors';
 import {config} from 'dotenv';
@@ -128,7 +129,7 @@ app.get('/api/keep-alive', async (req, res)=>{
   await new Promise(resolve => setTimeout(resolve, 2000));
   res.send('Server Alive')
 })
-app.get('/get-countries', async (req,res)=>{
+app.get('/api/get-countries', async (req,res)=>{
   console.log('Received Countries Request')
   const csvFilePath ='./countryList.csv'
   const jsonArray = await csv().fromFile(csvFilePath);
