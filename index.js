@@ -20,7 +20,7 @@ app.post('/api/generate-image',async (req,res)=>{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Apikey: process.env.API_KEY
+        'API-Key': process.env.API_KEY
       },
       body: JSON.stringify({
         input_face: uploadedImage,
@@ -43,7 +43,7 @@ app.post('/api/generate-image',async (req,res)=>{
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Apikey: process.env.API_KEY
+          'API-Key': process.env.API_KEY
         }
       })
       if(!generatedRes.ok){
@@ -76,7 +76,7 @@ app.post('/api/upscale-image', async (req, res)=>{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ApiKey: process.env.API_KEY
+        'API-Key': process.env.API_KEY
       },
       body: JSON.stringify({
         model_name : "RealESRGAN_x4plus",
@@ -99,7 +99,7 @@ app.post('/api/upscale-image', async (req, res)=>{
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          ApiKey : process.env.API_KEY
+          'API-Key' : process.env.API_KEY
         }
       })
       if(!generatedRes.ok){
