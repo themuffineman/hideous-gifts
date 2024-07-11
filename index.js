@@ -6,8 +6,11 @@ import {config} from 'dotenv';
 config()
 const app = express()
 app.listen(8080, () => console.log('listening on 8080'))
-app.use(cors())
-app.use(bodyParser.json())
+app.use(cors({
+  origin: '*'
+}))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.post('/api/generate-image',async (req,res)=>{
   let isImageDone = false
