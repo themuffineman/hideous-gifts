@@ -115,12 +115,13 @@ app.post('/api/upscale-image', async (req, res)=>{
       if(pollingRes.status === 'SUCCESS'){
         upscaledImage = pollingRes.download_urls[0]
         isImageDone = true
-        console.log('Polling Success:', generatedImage)
+        console.log('Polling Success:', upscaledImage)
       }
     }
 
-    return res.json({url: upscaledImage})
+    return res.json({url: upscaledImage}).status(200)
   }catch(err){
     console.error(err.message)
+    return res.json({error: err}).status(500)
   }
 })
