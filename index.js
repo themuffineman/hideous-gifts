@@ -54,7 +54,7 @@ app.post('/api/generate-image',async (req,res)=>{
         console.log(resError)
         throw Error(`Failed to poll`)
       }
-      const pollingRes = await generatedRes.json();
+      const pollingRes = await generatedRes.json()
       console.log('Polling Status:', pollingRes.status)
       if(pollingRes.status === 'SUCCESS'){
         generatedImage = pollingRes.download_urls[0]
@@ -106,12 +106,16 @@ app.post('/api/upscale-image', async (req, res)=>{
         }
       })
       if(!generatedRes.ok){
+        const resError = await generatedRes.json()
+        console.log(resError)
         throw Error('Failed to poll')
       }
       const pollingRes = await generatedRes.json();
+      console.log('Polling Status:', pollingRes.status)
       if(pollingRes.status === 'SUCCESS'){
-        generatedImage = pollingRes.downloadUrls[0]
+        upscaledImage = pollingRes.download_urls[0]
         isImageDone = true
+        console.log('Polling Success:', generatedImage)
       }
     }
 
