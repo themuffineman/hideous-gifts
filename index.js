@@ -12,6 +12,18 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const authenticate = (req, res, next) => {
+  const apiKey = req.header('x-api-key');
+  if (apiKey && apiKey === process.env.SERVER_API_KEY) {
+    next();
+  } else {
+    res.status(401).json({ message: 'Unauthorized' });
+  }
+};
+app.use('/api/generate-image', authenticate);
+app.use('/api/upscale-image', authenticate);
+app.use('/api/get-countries', authenticate);
+
 app.post('/api/generate-image',async (req,res)=>{
   let isImageDone = false
   let generatedImage;
