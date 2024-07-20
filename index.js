@@ -60,6 +60,9 @@ app.post('/api/generate-image',async (req,res)=>{
         generatedImage = pollingRes.download_urls[0]
         isImageDone = true
         console.log('Polling Success:', generatedImage)
+      }else if (pollingRes.status === 'FAILURE'){
+        isImageDone = true
+        throw new Error('Failure to generate image')
       }
     }
     
