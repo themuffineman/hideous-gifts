@@ -23,6 +23,7 @@ const authenticate = (req, res, next) => {
 app.use('/api/generate-image', authenticate);
 app.use('/api/upscale-image', authenticate);
 app.use('/api/get-countries', authenticate);
+app.use('/api/text2image', authenticate);
 
 
 app.post('/api/generate-image',async (req,res)=>{
