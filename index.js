@@ -24,6 +24,7 @@ app.use('/api/generate-image', authenticate);
 app.use('/api/upscale-image', authenticate);
 app.use('/api/get-countries', authenticate);
 
+
 app.post('/api/generate-image',async (req,res)=>{
   let isImageDone = false
   let generatedImage;
@@ -149,4 +150,73 @@ app.get('/api/get-countries', async (req,res)=>{
   const csvFilePath ='./countryList.csv'
   const jsonArray = await csv().fromFile(csvFilePath);
   res.json(jsonArray);
+})
+app.post('/api/text2image',async (req,res)=>{
+  let isImageDone = false
+  let generatedImage;
+  try{
+    const {prompt} = req.body;
+    console.log('Received Request:', prompt)
+    
+    const apiResponse = await fetch('https://api.imagepipeline.io/sdxl/text2image/v1', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'API-Key': process.env.API_KEY
+      },
+      body: JSON.stringify({ 
+        "prompt": `cute caricature ${prompt}, sticker, stickers, pastel background`,
+        "negative_prompt": "photographic, realistic, realism, 35mm film, dslr, cropped, frame, text, ((deformed eyes)), glitch, noise, noisy, off-center, deformed, ((cross-eyed)), bad anatomy, ugly, disfigured, sloppy, duplicate, mutated, black and white",
+        "num_inference_steps": 30,
+        "lora_models": ["5e3413a0-22aa-471b-bd2b-c87143a11596"],
+        "lora_weights": [2],
+        "model_id": "3a2da47b-5557-415d-9f1a-f24b05d4b157",
+        "clip_skip": 2,
+        "samples": 2,
+        "ip_adapter": ["ip-adapter-plus_sdxl_vit-h"],
+        "ip_adapter_scale": [0.3],
+        "ip_adapter_image": "https://cdn.discordapp.com/attachments/1263742655808933908/1266660771467628594/image.jpg?ex=66a5f545&is=66a4a3c5&hm=fc350763879a690398e24b42ad5b13d042495f957cef0e4e7e7e67d79399d6d4&"
+     })
+    })
+    
+    if(!apiResponse.ok){
+      const error = await apiResponse.json()
+      console.log(error)
+      throw Error('Failed to create image')
+    }
+    
+    const resBody = await apiResponse.json();
+    console.log('Image Created: ', resBody.id)
+    
+    while(isImageDone !== true){
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const generatedRes = await fetch(`https://api.imagepipeline.io/sd/text2image/v1/status/${resBody.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'API-Key': process.env.API_KEY
+        }
+      })
+      if(!generatedRes.ok){
+        const resError = await generatedRes.json()
+        console.log(resError)
+        throw Error(`Failed to poll`)
+      }
+      const pollingRes = await generatedRes.json()
+      console.log('Polling Status:', pollingRes.status)
+      if(pollingRes.status === 'SUCCESS'){
+        generatedImage = pollingRes.download_urls[0]
+        isImageDone = true
+        console.log('Polling Success:', generatedImage)
+      }else if (pollingRes.status === 'FAILURE'){
+        isImageDone = true
+        throw new Error('Failure to generate image')
+      }
+    }
+    
+    return res.json({url: generatedImage})
+  }catch(err){
+    console.error(err.message)
+    return res.status(500).json({error: err.message})
+  }
 })
