@@ -211,7 +211,7 @@ app.post('/api/text2image',async (req,res)=>{
         console.log('Polling Success:', generatedImage)
       }else if (pollingRes.status === 'FAILURE'){
         isImageDone = true
-        throw new Error('Failure to generate image')
+        throw new Error(`Failure to generate image: ${pollingRes?.error}`)
       }
     }
     
