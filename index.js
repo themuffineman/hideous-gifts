@@ -176,7 +176,7 @@ app.post('/api/text2image',async (req,res)=>{
         "samples": 2,
         "ip_adapter": ["ip-adapter-plus_sdxl_vit-h"],
         "ip_adapter_scale": [0.3],
-        "ip_adapter_image": "https://cdn.discordapp.com/attachments/1263742655808933908/1266660771467628594/image.jpg?ex=66a5f545&is=66a4a3c5&hm=fc350763879a690398e24b42ad5b13d042495f957cef0e4e7e7e67d79399d6d4&"
+        "ip_adapter_image": "https://5b0c1abdeba4008a1e0a37d3869f1f8a.cdn.bubble.io/f1722394561337x803284699776567000/b2_download_file_by_id.png"
      })
     })
     
