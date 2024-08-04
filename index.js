@@ -167,7 +167,7 @@ app.post('/api/text2image',async (req,res)=>{
       },
       body: JSON.stringify({ 
         "prompt": `cute caricature ${prompt}, sticker, stickers, pastel background`,
-        "negative_prompt": "aesthetic, realistic, realism, 35mm film, dslr, cropped, frame, text, ((deformed eyes)), glitch, noise, noisy, off-center, deformed, ((cross-eyed)), bad anatomy, ugly, disfigured, sloppy, duplicate, mutated, black and white",
+        "negative_prompt": "photographic, realistic, realism, 35mm film, dslr, cropped, frame, text, ((deformed eyes)), glitch, noise, noisy, off-center, deformed, ((cross-eyed)), bad anatomy, ugly, disfigured, sloppy, duplicate, mutated, black and white",
         "num_inference_steps": 30,
         "lora_models": ["5e3413a0-22aa-471b-bd2b-c87143a11596"],
         "lora_weights": [2],
