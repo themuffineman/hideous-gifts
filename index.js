@@ -165,19 +165,7 @@ app.post('/api/text2image',async (req,res)=>{
         'Content-Type': 'application/json',
         'API-Key': process.env.API_KEY
       },
-      body: JSON.stringify({ 
-        "prompt": `cute caricature ${prompt}, sticker, stickers, pastel background`,
-        "negative_prompt": "photographic, realistic, realism, 35mm film, dslr, cropped, frame, text, ((deformed eyes)), glitch, noise, noisy, off-center, deformed, ((cross-eyed)), bad anatomy, ugly, disfigured, sloppy, duplicate, mutated, black and white",
-        "num_inference_steps": 30,
-        "lora_models": ["5e3413a0-22aa-471b-bd2b-c87143a11596"],
-        "lora_weights": [2],
-        "model_id": "3a2da47b-5557-415d-9f1a-f24b05d4b157",
-        "clip_skip": 2,
-        "samples": 2,
-        "ip_adapter": ["ip-adapter-plus_sdxl_vit-h"],
-        "ip_adapter_scale": [0.3],
-        "ip_adapter_image": "https://5b0c1abdeba4008a1e0a37d3869f1f8a.cdn.bubble.io/f1722394561337x803284699776567000/b2_download_file_by_id.png"
-     })
+      body: JSON.stringify(req.body)
     })
     
     if(!apiResponse.ok){
