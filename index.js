@@ -194,7 +194,7 @@ app.post('/api/text2image',async (req,res)=>{
       const pollingRes = await generatedRes.json()
       console.log('Polling Status:', pollingRes.status)
       if(pollingRes.status === 'SUCCESS'){
-        generatedImage = pollingRes.download_urls[0]
+        generatedImage = pollingRes.download_urls
         isImageDone = true
         console.log('Polling Success:', generatedImage)
       }else if (pollingRes.status === 'FAILURE'){
