@@ -88,11 +88,11 @@ app.post("/api/generate-image", async (req, res) => {
         throw new Error(`Failure to generate image: ${pollingRes?.error}`);
       }
     }
-    const watermarkedImage = await applyWatermark(
-      generatedImage,
-      "hideous-gifts-logo.svg"
-    );
-    return res.json({ url: watermarkedImage });
+    // const watermarkedImage = await applyWatermark(
+    //   generatedImage,
+    //   "hideous-gifts-logo.svg"
+    // );
+    return res.json({ url: generatedImage });
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ error: err.message });
