@@ -265,6 +265,7 @@ app.post("/api/create-product", async (req,res)=>{
     })
     console.log("varint info")
     const variantInfo = await variantInfoResponse.json()
+    console.log("VariantInfo",variantInfo.variants)
     const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
       method:"POST",
       headers: {
