@@ -263,6 +263,7 @@ app.post("/api/create-product", async (req,res)=>{
         "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6ImRkMzYzZTkyOTcyMDgyMzFhN2M0OGZiZThhNzU4NDNiNTQ2MmJjMGJmODMzY2MyMzEyZjU1ZWMyNWY4OWQ0ZWFkNjUyMzlmY2RhYjg2MTY3IiwiaWF0IjoxNzE4MzU1MDY3LjM2Mzc2NSwibmJmIjoxNzE4MzU1MDY3LjM2Mzc2OSwiZXhwIjoxNzQ5ODkxMDY3LjM1NjQ4Niwic3ViIjoiMTcwNjQzMDAiLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIl19.AjYSr4JB9O3ke7SiTNwwAaNsa2NPOA-1uKtWJ3yQXDQLwNuzUBxt7V4PpxcmHx1p3NbMzE7Brqz8ajLo6p8"
       }
     })
+
     const variantInfo = await variantInfoResponse.json()
     const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
       method:"POST",
@@ -285,38 +286,42 @@ app.post("/api/create-product", async (req,res)=>{
         description: reqBody.productName,
         blueprint_id: reqBody.blueprintId,
         print_provider_id: reqBody.printProvider,
-        variants:[
-          variantInfo.variants.map((variant)=>(
+        variants: variantInfo.variants.map((variant)=>{
+          console.log("1st map")
+          return (
             {
               id: variant.id,
               price: reqBody.price,
               is_enabled: true
             }
-          ))
-        ],
+          )
+      }),
           print_areas: [
             {
-              variant_ids: [
-                variantInfo.variants.map((variant)=>(
+              variant_ids: variantInfo.variants.map((variant)=>{
+                console.log("2nd map")
+                return(
                   variant.id
-                ))
-              ],
-              placeholders: [
-                reqBody.printAreas.map((area)=>(
-                  {
-                    position: area,
-                    images: [
-                        {
-                          id: imageUpload.id, 
-                          x: reqBody.x, 
-                          y: reqBody.y, 
-                          scale: reqBody.scale,
-                          angle: 0,
-                        }
-                    ]
-                  }
-                ))
-              ]
+                )
+            }),
+              placeholders: reqBody.printAreas.map((area)=>{
+                  console.log("3rd map")
+                  return(
+                    {
+                      position: area,
+                      images: [
+                          {
+                            id: imageUpload.id, 
+                            x: reqBody.x, 
+                            y: reqBody.y, 
+                            scale: reqBody.scale,
+                            angle: 0,
+                          }
+                      ]
+                    }
+                  )
+            })
+              
             }
           ]
       })
