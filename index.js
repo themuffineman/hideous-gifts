@@ -252,6 +252,84 @@ app.post("/api/text2image", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+app.post("api/create-product", async (req,res)=>{
+  try {
+    const reqBody = req.body
+    const variantInfoResponse = await fetch(`https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6ImRkMzYzZTkyOTcyMDgyMzFhN2M0OGZiZThhNzU4NDNiNTQ2MmJjMGJmODMzY2MyMzEyZjU1ZWMyNWY4OWQ0ZWFkNjUyMzlmY2RhYjg2MTY3IiwiaWF0IjoxNzE4MzU1MDY3LjM2Mzc2NSwibmJmIjoxNzE4MzU1MDY3LjM2Mzc2OSwiZXhwIjoxNzQ5ODkxMDY3LjM1NjQ4Niwic3ViIjoiMTcwNjQzMDAiLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIl19.AjYSr4JB9O3ke7SiTNwwAaNsa2NPOA-1uKtWJ3yQXDQLwNuzUBxt7V4PpxcmHx1p3NbMzE7Brqz8ajLo6p8"
+      }
+    })
+    const variantInfo = await variantInfoResponse.json()
+    const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
+      method:"POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        file_name: reqBody.fileName,
+        url: reqBody.imageUrl
+      })
+    })
+    const imageUpload = await imageUploadResponse.json()
+    const createProductResponse = await fetch("https://api.printify.com/v1/shops/14354198/products.json", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: reqBody.productName,
+        description: reqBody.productName,
+        blueprint_id: reqBody.blueprintId,
+        print_provider_id: reqBody.printProvider,
+        variants:[
+          variantInfo.variants.map((variant)=>(
+            {
+              id: variant.id,
+              price: reqBody.price,
+              is_enabled: true
+            }
+          ))
+        ],
+          print_areas: [
+            {
+              variant_ids: [
+                variantInfo.variants.map((variant)=>(
+                  variant.id
+                ))
+              ],
+              placeholders: [
+                reqBody.printAreas.map((area)=>(
+                  {
+                    position: area,
+                    images: [
+                        {
+                          id: imageUpload.id, 
+                          x: reqBody.x, 
+                          y: reqBody.y, 
+                          scale: reqBody.scale,
+                          angle: 0,
+                        }
+                    ]
+                  }
+                ))
+              ]
+            }
+          ]
+      })
+    })
+    const createProduct = await createProductResponse.json()
+    return res.json({
+      data: createProduct
+    })
+  } catch (error) {
+    return res.status(500).json({
+      data: error.message
+    })
+  }
+})
 
 async function applyWatermark(imageUrl, watermarkPath) {
   try {
