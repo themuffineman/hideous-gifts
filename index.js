@@ -252,8 +252,9 @@ app.post("/api/text2image", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
-app.post("api/create-product", async (req,res)=>{
+app.post("/api/create-product", async (req,res)=>{
   try {
+    console.log("received request")
     const reqBody = req.body
     const variantInfoResponse = await fetch(`https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,{
       method: "POST",
