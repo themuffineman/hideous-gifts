@@ -254,7 +254,6 @@ app.post("/api/text2image", async (req, res) => {
 });
 app.post("/api/create-product", async (req,res)=>{
   try {
-    console.log("received request")
     const reqBody = req.body
     const variantInfoResponse = await fetch(`https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,{
       method:"GET",
@@ -262,9 +261,7 @@ app.post("/api/create-product", async (req,res)=>{
         "Authorization": reqBody.token
       }
     })
-    console.log("varint info")
     const variantInfo = await variantInfoResponse.json()
-    console.log("VariantInfo",variantInfo)
     const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
       method: "POST",
       headers: {
@@ -277,8 +274,6 @@ app.post("/api/create-product", async (req,res)=>{
       })
     })
     const imageUpload = await imageUploadResponse.json()
-    console.log("upload info")
-    console.log("uplaod info",imageUpload)
 
     const createProductResponse = await fetch("https://api.printify.com/v1/shops/14354198/products.json", {
       method: "POST",
@@ -292,7 +287,6 @@ app.post("/api/create-product", async (req,res)=>{
         blueprint_id: reqBody.blueprintId,
         print_provider_id: reqBody.providerId,
         variants: variantInfo.variants.map((variant)=>{
-          console.log("1st map")
           return (
             {
               id: variant.id,
@@ -304,13 +298,11 @@ app.post("/api/create-product", async (req,res)=>{
           print_areas: [
             {
               variant_ids: variantInfo.variants.map((variant)=>{
-                console.log("2nd map")
                 return(
                   variant.id
                 )
             }),
               placeholders: reqBody.printAreas.map((area)=>{
-                  console.log("3rd map")
                   return(
                     {
                       position: area,
@@ -331,7 +323,6 @@ app.post("/api/create-product", async (req,res)=>{
           ]
       })
     })
-    console.log("response info")
     const createProduct = await createProductResponse.json()
     return res.json({
       data: createProduct
