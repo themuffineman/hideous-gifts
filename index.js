@@ -1,4 +1,5 @@
 import csv from "csvtojson/v2/index.js";
+import FormData from 'form-data';
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
@@ -88,11 +89,11 @@ app.post("/api/generate-image", async (req, res) => {
         throw new Error(`Failure to generate image: ${pollingRes?.error}`);
       }
     }
-    // const watermarkedImage = await applyWatermark(
-    //   generatedImage,
-    //   "hideous-gifts-logo.svg"
-    // );
-    return res.json({ url: generatedImage });
+    const watermarkedImage = await applyWatermark(
+      generatedImage,
+      "hideous-gifts-logo.svg"
+    );
+    return res.json({ url: watermarkedImage });
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ error: err.message });
@@ -335,7 +336,8 @@ app.post("/api/create-product", async (req,res)=>{
 })
 
 async function applyWatermark(imageUrl, watermarkPath) {
-  try {
+
+  try{
     // Load the main image from the hosted URL and the watermark SVG locally
     const [image, watermark] = await Promise.all([
       loadImage(imageUrl),
@@ -353,7 +355,7 @@ async function applyWatermark(imageUrl, watermarkPath) {
     const svgImage = await loadImage(
       `data:image/svg+xml;base64,${Buffer.from(watermark).toString("base64")}`
     );
-    const watermarkWidth = image.width * 0.1; // Scale the watermark to 10% of the image width
+    const watermarkWidth = image.width * 0.2; // Scale the watermark to 20% of the image width
     const aspectRatio = svgImage.width / svgImage.height;
     const watermarkHeight = watermarkWidth / aspectRatio;
 
@@ -364,10 +366,36 @@ async function applyWatermark(imageUrl, watermarkPath) {
     // Draw the watermark onto the canvas
     ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
 
-    // Export the final image as base64
-    return canvas.toDataURL(); // Returns a base64 string (data:image/png;base64,...)
-  } catch (error) {
-    console.error("Error adding watermark:", error);
+    // Export the final image as Base64
+    const base64String = canvas.toDataURL().replace(/^data:image\/\w+;base64,/, ""); // Strip the data prefix
+
+    // Upload the Base64 image to ImageKit
+    const PRIVATE_API_KEY = process.env.IMAGEKIT_KEY; // Private API key for ImageKit
+    const FILE_NAME = "watermarked-image.png"; // Desired file name in ImageKit
+
+    // Create the form data for ImageKit API
+    const formData = new FormData();
+    formData.append("file", base64String); // The Base64-encoded image
+    formData.append("fileName", FILE_NAME); // The file name for ImageKit
+
+    // Define the API URL and headers
+    const url = "https://upload.imagekit.io/api/v1/files/upload";
+    const options = {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${PRIVATE_API_KEY}:`).toString("base64")}`, // Basic Auth
+      },
+      body: formData,
+    };
+
+    // Send the upload request to ImageKit
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    console.log("Image uploaded successfully:", data.url); // Log the hosted URL
+    return data.url; // Return the hosted URL
+  }catch(error){
+    console.error("Error adding watermark:", error.message);
     throw error;
   }
 }
