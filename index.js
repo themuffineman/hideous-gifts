@@ -263,7 +263,7 @@ app.post("/api/create-product", async (req,res)=>{
         "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6ImRkMzYzZTkyOTcyMDgyMzFhN2M0OGZiZThhNzU4NDNiNTQ2MmJjMGJmODMzY2MyMzEyZjU1ZWMyNWY4OWQ0ZWFkNjUyMzlmY2RhYjg2MTY3IiwiaWF0IjoxNzE4MzU1MDY3LjM2Mzc2NSwibmJmIjoxNzE4MzU1MDY3LjM2Mzc2OSwiZXhwIjoxNzQ5ODkxMDY3LjM1NjQ4Niwic3ViIjoiMTcwNjQzMDAiLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIl19.AjYSr4JB9O3ke7SiTNwwAaNsa2NPOA-1uKtWJ3yQXDQLwNuzUBxt7V4PpxcmHx1p3NbMzE7Brqz8ajLo6p8"
       }
     })
-
+    console.log("varint info")
     const variantInfo = await variantInfoResponse.json()
     const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
       method:"POST",
@@ -276,6 +276,8 @@ app.post("/api/create-product", async (req,res)=>{
       })
     })
     const imageUpload = await imageUploadResponse.json()
+    console.log("upload info")
+
     const createProductResponse = await fetch("https://api.printify.com/v1/shops/14354198/products.json", {
       method: "POST",
       headers: {
@@ -326,6 +328,7 @@ app.post("/api/create-product", async (req,res)=>{
           ]
       })
     })
+    console.log("response info")
     const createProduct = await createProductResponse.json()
     return res.json({
       data: createProduct
