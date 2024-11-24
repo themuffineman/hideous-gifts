@@ -257,9 +257,8 @@ app.post("/api/create-product", async (req,res)=>{
     console.log("received request")
     const reqBody = req.body
     const variantInfoResponse = await fetch(`https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,{
-      method: "GET",
+      method:"GET",
       headers: {
-        "Content-Type": "application/json",
         "Authorization": reqBody.token
       }
     })
