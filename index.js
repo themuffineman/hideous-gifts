@@ -290,7 +290,7 @@ app.post("/api/create-product", async (req,res)=>{
         title: reqBody.productName,
         description: reqBody.productName,
         blueprint_id: reqBody.blueprintId,
-        print_provider_id: reqBody.printProvider,
+        print_provider_id: reqBody.providerId,
         variants: variantInfo.variants.map((variant)=>{
           console.log("1st map")
           return (
