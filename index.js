@@ -335,8 +335,7 @@ app.post("/api/create-product", async (req,res)=>{
   }
 })
 async function applyWatermark(imageUrl, watermarkPath) {
-
-  try{
+  try {
     // Load the main image from the hosted URL and the watermark SVG locally
     const [image, watermark] = await Promise.all([
       loadImage(imageUrl),
@@ -350,7 +349,7 @@ async function applyWatermark(imageUrl, watermarkPath) {
     // Draw the main image onto the canvas
     ctx.drawImage(image, 0, 0, image.width, image.height);
 
-    // Create a temporary canvas for the watermark
+    // Load the watermark as an image from the SVG string
     const svgImage = await loadImage(
       `data:image/svg+xml;base64,${Buffer.from(watermark).toString("base64")}`
     );
@@ -362,7 +361,7 @@ async function applyWatermark(imageUrl, watermarkPath) {
     const x = 5; // 5px padding from the left
     const y = image.height - watermarkHeight - 5; // 5px padding from the bottom
 
-    // Draw the watermark onto the canvas
+    // Draw the watermark directly onto the canvas
     ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
 
     // Export the final image as Base64
@@ -378,7 +377,7 @@ async function applyWatermark(imageUrl, watermarkPath) {
     formData.append("fileName", FILE_NAME); // The file name for ImageKit
 
     // Define the API URL and headers
-    console.log("Connecting to imagekit...")
+    console.log("Connecting to imagekit...");
     const url = "https://upload.imagekit.io/api/v1/files/upload";
     const options = {
       method: "POST",
@@ -394,8 +393,10 @@ async function applyWatermark(imageUrl, watermarkPath) {
 
     console.log("Image uploaded successfully:", data.url); // Log the hosted URL
     return data.url; // Return the hosted URL
-  }catch(error){
+  } catch (error) {
     console.error("Error adding watermark:", error.message);
     throw error;
   }
 }
+
+
