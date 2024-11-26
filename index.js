@@ -89,11 +89,11 @@ app.post("/api/generate-image", async (req, res) => {
         throw new Error(`Failure to generate image: ${pollingRes?.error}`);
       }
     }
-    // const watermarkedImage = await applyWatermark(
-    //   generatedImage,
-    //   "hideous-gifts-logo.svg"
-    // );
-    return res.json({ url: generatedImage });
+    const watermarkedImage = await applyWatermark(
+      generatedImage,
+      "hideous-gifts-logo.svg"
+    );
+    return res.json({ url: watermarkedImage });
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ error: err.message });
@@ -334,7 +334,6 @@ app.post("/api/create-product", async (req,res)=>{
     })
   }
 })
-
 async function applyWatermark(imageUrl, watermarkPath) {
 
   try{
