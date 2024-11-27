@@ -5,6 +5,7 @@ import cors from "cors";
 import { config } from "dotenv";
 import { createCanvas, loadImage } from "canvas";
 import { promises as fs } from "fs";
+import Imagekit from "imagekit"
 
 config();
 const app = express();
@@ -334,69 +335,60 @@ app.post("/api/create-product", async (req,res)=>{
     })
   }
 })
+
+
 async function applyWatermark(imageUrl, watermarkPath) {
   try {
-    // Load the main image from the hosted URL and the watermark SVG locally
+    // Initialize ImageKit instance
+    const imagekit = new ImageKit({
+      publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+      privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+    });
+
+    // Load the main image from the URL and watermark SVG locally
     const [image, watermark] = await Promise.all([
       loadImage(imageUrl),
-      fs.readFile(watermarkPath, "utf8"), // Read the SVG file
+      fs.readFile(watermarkPath, "utf8"), // Read SVG file as string
     ]);
 
-    // Create a canvas and set its dimensions to the image's dimensions
+    // Create a canvas with the dimensions of the main image
     const canvas = createCanvas(image.width, image.height);
     const ctx = canvas.getContext("2d");
 
     // Draw the main image onto the canvas
     ctx.drawImage(image, 0, 0, image.width, image.height);
 
-    // Load the watermark as an image from the SVG string
+    // Load the watermark as an image and draw it onto the canvas
     const svgImage = await loadImage(
       `data:image/svg+xml;base64,${Buffer.from(watermark).toString("base64")}`
     );
-    const watermarkWidth = image.width * 0.2; // Scale the watermark to 20% of the image width
+    const watermarkWidth = image.width * 0.2; // Scale to 20% of image width
     const aspectRatio = svgImage.width / svgImage.height;
     const watermarkHeight = watermarkWidth / aspectRatio;
 
-    // Calculate position: bottom-left corner
+    // Position the watermark at the bottom left
     const x = 5; // 5px padding from the left
     const y = image.height - watermarkHeight - 5; // 5px padding from the bottom
-
-    // Draw the watermark directly onto the canvas
     ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
 
-    // Export the final image as Base64
-    const base64String = canvas.toDataURL().replace(/^data:image\/\w+;base64,/, ""); // Strip the data prefix
+    // Export the final image as a buffer
+    const buffer = canvas.toBuffer("image/png");
 
-    // Upload the Base64 image to ImageKit
-    const PRIVATE_API_KEY = process.env.IMAGEKIT_KEY; // Private API key for ImageKit
-    const FILE_NAME = "watermarked-image.png"; // Desired file name in ImageKit
+    // Use ImageKit SDK to upload the buffer
+    const result = await imagekit.upload({
+      file: buffer, // Pass the image buffer
+      fileName: "watermarked-image.png", // Specify the file name
+      tags: ["watermarked", "image"], // Optional tags
+    });
 
-    // Create the form data for ImageKit API
-    const formData = new FormData();
-    formData.append("file", base64String); // The Base64-encoded image
-    formData.append("fileName", FILE_NAME); // The file name for ImageKit
-
-    // Define the API URL and headers
-    console.log("Connecting to imagekit...");
-    const url = "https://upload.imagekit.io/api/v1/files/upload";
-    const options = {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${PRIVATE_API_KEY}:`).toString("base64")}`, // Basic Auth
-      },
-      body: formData,
-    };
-
-    // Send the upload request to ImageKit
-    const response = await fetch(url, options);
-    const data = await response.json();
-
-    console.log("Image uploaded successfully:", data.url); // Log the hosted URL
-    return data.url; // Return the hosted URL
+    console.log("Image uploaded successfully:", result.url);
+    return result.url; // Return the URL of the uploaded image
   } catch (error) {
     console.error("Error adding watermark:", error.message);
     throw error;
   }
 }
+
 
 
