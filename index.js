@@ -5,7 +5,7 @@ import cors from "cors";
 import { config } from "dotenv";
 import { createCanvas, loadImage } from "canvas";
 import { promises as fs } from "fs";
-import ImageKit from "imagekit-javascript"
+import ImageKit from "imagekit";
 
 config();
 const app = express();
