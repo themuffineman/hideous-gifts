@@ -336,8 +336,7 @@ app.post("/api/create-product", async (req,res)=>{
   }
 })
 
-
-async function applyWatermark(imageUrl, watermarkPath) {
+async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.2){
   try {
     // Initialize ImageKit instance
     const imagekit = new ImageKit({
@@ -364,32 +363,32 @@ async function applyWatermark(imageUrl, watermarkPath) {
       `data:image/svg+xml;base64,${Buffer.from(watermark).toString("base64")}`
     );
 
-    // Scale the watermark to span the full width of the image
-    const watermarkWidth = image.width; // Full width of the image
+    // Calculate size of each watermark (scale to 20% of the image width)
+    const watermarkWidth = image.width * 0.2; // Adjust as needed
     const aspectRatio = svgImage.width / svgImage.height;
-    const watermarkHeight = watermarkWidth / aspectRatio; // Maintain aspect ratio
+    const watermarkHeight = watermarkWidth / aspectRatio;
 
-    // Position the watermark centered vertically
-    const x = 0; // Start at the left edge
-    const y = (image.height - watermarkHeight) / 2; // Center vertically
+    // Set watermark transparency
+    ctx.globalAlpha = watermarkOpacity;
 
-    // Adjust opacity (optional)
-    ctx.globalAlpha = 0.4; // Set transparency to 20%
-
-    // Draw the watermark onto the canvas
-    ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
+    // Scatter the watermark across the canvas
+    const padding = 20; // Space between watermarks
+    for (let y = 0; y < image.height; y += watermarkHeight + padding) {
+      for (let x = 0; x < image.width; x += watermarkWidth + padding) {
+        ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
+      }
+    }
 
     // Reset transparency
     ctx.globalAlpha = 1.0;
 
     // Export the final image as a buffer
     const buffer = canvas.toBuffer("image/png");
-    //new date for file name
     const filenameDate = new Date()
     // Upload the image to ImageKit
     const result = await imagekit.upload({
       file: buffer, // The final image as a buffer
-      fileName: `hg-watermarked-image-${filenameDate.getTime()}-${filenameDate.getDate}-${filenameDate.getMonth}-${filenameDate.getFullYear}.png`, // Name of the file
+      fileName: `hg-watermarked-image-${filenameDate.getTime()}-${filenameDate.getDate()}-${filenameDate.getMonth()}-${filenameDate.getFullYear()}.png`, // Name of the file
     });
 
     console.log("Image uploaded successfully:", result.url);
