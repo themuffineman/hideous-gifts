@@ -325,9 +325,9 @@ app.post("/api/create-product", async (req,res)=>{
           ]
       })
     })
-    const {images, variants} = await createProductResponse.json()
+    const {images, variants, id} = await createProductResponse.json()
     return res.json({
-      images, variants
+      images, variants, id
     })
   } catch (error) {
     return res.status(500).json({
