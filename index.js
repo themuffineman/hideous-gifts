@@ -94,7 +94,7 @@ app.post("/api/generate-image", async (req, res) => {
       generatedImage,
       "hideous-gifts-logo.svg"
     );
-    return res.json({ url: watermarkedImage });
+    return res.json({ previewUrl: watermarkedImage, productUrl: generatedImage });
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ error: err.message });
@@ -384,6 +384,7 @@ async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.2){
 
     // Export the final image as a buffer
     const buffer = canvas.toBuffer("image/png");
+    //Date for the filename
     const filenameDate = new Date()
     // Upload the image to ImageKit
     const result = await imagekit.upload({
