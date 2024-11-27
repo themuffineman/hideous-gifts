@@ -346,10 +346,10 @@ async function applyWatermark(imageUrl, watermarkPath) {
       urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
     });
 
-    // Load the main image from the URL and watermark SVG locally
+    // Load the main image and watermark SVG
     const [image, watermark] = await Promise.all([
       loadImage(imageUrl),
-      fs.readFile(watermarkPath, "utf8"), // Read SVG file as string
+      fs.readFile(watermarkPath, "utf8"), // Read SVG as a string
     ]);
 
     // Create a canvas with the dimensions of the main image
@@ -359,27 +359,37 @@ async function applyWatermark(imageUrl, watermarkPath) {
     // Draw the main image onto the canvas
     ctx.drawImage(image, 0, 0, image.width, image.height);
 
-    // Load the watermark as an image and draw it onto the canvas
+    // Load the watermark SVG as an image
     const svgImage = await loadImage(
       `data:image/svg+xml;base64,${Buffer.from(watermark).toString("base64")}`
     );
-    const watermarkWidth = image.width * 0.2; // Scale to 20% of image width
-    const aspectRatio = svgImage.width / svgImage.height;
-    const watermarkHeight = watermarkWidth / aspectRatio;
 
-    // Position the watermark at the bottom left
-    const x = 5; // 5px padding from the left
-    const y = image.height - watermarkHeight - 5; // 5px padding from the bottom
+    // Scale the watermark to span the full width of the image
+    const watermarkWidth = image.width; // Full width of the image
+    const aspectRatio = svgImage.width / svgImage.height;
+    const watermarkHeight = watermarkWidth / aspectRatio; // Maintain aspect ratio
+
+    // Position the watermark centered vertically
+    const x = 0; // Start at the left edge
+    const y = (image.height - watermarkHeight) / 2; // Center vertically
+
+    // Adjust opacity (optional)
+    ctx.globalAlpha = 0.4; // Set transparency to 20%
+
+    // Draw the watermark onto the canvas
     ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
+
+    // Reset transparency
+    ctx.globalAlpha = 1.0;
 
     // Export the final image as a buffer
     const buffer = canvas.toBuffer("image/png");
-
-    // Use ImageKit SDK to upload the buffer
+    //new date for file name
+    const filenameDate = new Date()
+    // Upload the image to ImageKit
     const result = await imagekit.upload({
-      file: buffer, // Pass the image buffer
-      fileName: "watermarked-image.png", // Specify the file name
-      tags: ["watermarked", "image"], // Optional tags
+      file: buffer, // The final image as a buffer
+      fileName: `hg-watermarked-image-${filenameDate.getTime()}-${filenameDate.getDate}-${filenameDate.getMonth}-${filenameDate.getFullYear}.png`, // Name of the file
     });
 
     console.log("Image uploaded successfully:", result.url);
