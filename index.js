@@ -376,10 +376,11 @@ async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.4){
     // Set watermark transparency
     ctx.globalAlpha = watermarkOpacity;
 
-    // Scatter the watermark across the canvas
-    const padding = 20; // Space between watermarks
-    for (let y = 0; y < image.height; y += watermarkHeight + padding) {
-      for (let x = 0; x < image.width; x += watermarkWidth + padding) {
+    // Scatter the watermark with fewer instances (e.g., only 2 per row/column)
+    const horizontalSpacing = image.width / 2; // Divide image width into two segments
+    const verticalSpacing = image.height / 2; // Divide image height into two segments
+    for (let y = 0; y < image.height; y += verticalSpacing) {
+      for (let x = 0; x < image.width; x += horizontalSpacing) {
         ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
       }
     }
@@ -389,8 +390,8 @@ async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.4){
 
     // Export the final image as a buffer
     const buffer = canvas.toBuffer("image/png");
-    //Date for the filename
-    const filenameDate = new Date()
+    // Date for the filename
+    const filenameDate = new Date();
     // Upload the image to ImageKit
     const result = await imagekit.upload({
       file: buffer, // The final image as a buffer
@@ -404,6 +405,8 @@ async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.4){
     throw error;
   }
 }
+
+
 
 
 
