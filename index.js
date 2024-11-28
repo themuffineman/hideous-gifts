@@ -94,6 +94,11 @@ app.post("/api/generate-image", async (req, res) => {
       generatedImage,
       "hideous-gifts-logo.svg"
     );
+
+    if (Array.isArray(generatedImage)) {
+      generatedImage = generatedImage[0];
+    }
+  
     return res.json({ previewUrl: watermarkedImage, productUrl: generatedImage });
   } catch (err) {
     console.error(err.message);
