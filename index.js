@@ -92,6 +92,7 @@ app.post("/api/generate-image", async (req, res) => {
     }
     if (Array.isArray(generatedImage)) {
       generatedImage = generatedImage[0];
+      console.log("New gen iamge:", generatedImage)
     }
     const watermarkedImage = await applyWatermark(
       generatedImage,
