@@ -341,7 +341,7 @@ app.post("/api/create-product", async (req,res)=>{
   }
 })
 
-async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.2){
+async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.4){
   try {
     // Initialize ImageKit instance
     const imagekit = new ImageKit({
