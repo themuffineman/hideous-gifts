@@ -90,6 +90,9 @@ app.post("/api/generate-image", async (req, res) => {
         throw new Error(`Failure to generate image: ${pollingRes?.error}`);
       }
     }
+    if (Array.isArray(generatedImage)) {
+      generatedImage = generatedImage[0];
+    }
     const watermarkedImage = await applyWatermark(
       generatedImage,
       "hideous-gifts-logo.svg"
