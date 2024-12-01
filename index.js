@@ -374,41 +374,33 @@ app.post("/api/create-product-2", async (req,res)=>{
         description: reqBody.productName,
         blueprint_id: reqBody.blueprintId,
         print_provider_id: reqBody.providerId,
-        variants: variantInfo.variants.map((variant)=>{
-          return (
-            {
-              id: variant.id,
-              price: reqBody.price,
-              is_enabled: true
-            }
-          )
-      }),
-          print_areas: [
-            {
-              variant_ids: variantInfo.variants.map((variant)=>{
+        variants: reqBody.price,
+        print_areas: [
+          {
+            variant_ids: variantInfo.variants.map((variant)=>{
+              return(
+                variant.id
+              )
+          }),
+            placeholders: reqBody.printAreas.map((area)=>{
                 return(
-                  variant.id
+                  {
+                    position: area,
+                    images: [
+                        {
+                          id: imageUpload.id, 
+                          x: reqBody.x, 
+                          y: reqBody.y, 
+                          scale: reqBody.scale,
+                          angle: 0,
+                        }
+                    ]
+                  }
                 )
-            }),
-              placeholders: reqBody.printAreas.map((area)=>{
-                  return(
-                    {
-                      position: area,
-                      images: [
-                          {
-                            id: imageUpload.id, 
-                            x: reqBody.x, 
-                            y: reqBody.y, 
-                            scale: reqBody.scale,
-                            angle: 0,
-                          }
-                      ]
-                    }
-                  )
-            })
-              
-            }
-          ]
+          })
+            
+          }
+        ]
       })
     })
     const {images, variants, id} = await createProductResponse.json()
