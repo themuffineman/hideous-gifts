@@ -340,6 +340,87 @@ app.post("/api/create-product", async (req,res)=>{
     })
   }
 })
+app.post("/api/create-product-2", async (req,res)=>{
+  try {
+    const reqBody = req.body
+    const variantInfoResponse = await fetch(`https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,{
+      method:"GET",
+      headers: {
+        "Authorization": reqBody.token
+      }
+    })
+    const variantInfo = await variantInfoResponse.json()
+    const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": reqBody.token
+      },
+      body: JSON.stringify({
+        file_name: reqBody.fileName,
+        url: reqBody.imageUrl
+      })
+    })
+    const imageUpload = await imageUploadResponse.json()
+
+    const createProductResponse = await fetch("https://api.printify.com/v1/shops/14354198/products.json", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": reqBody.token
+      },
+      body: JSON.stringify({
+        title: reqBody.productName,
+        description: reqBody.productName,
+        blueprint_id: reqBody.blueprintId,
+        print_provider_id: reqBody.providerId,
+        variants: variantInfo.variants.map((variant)=>{
+          return (
+            {
+              id: variant.id,
+              price: reqBody.price,
+              is_enabled: true
+            }
+          )
+      }),
+          print_areas: [
+            {
+              variant_ids: variantInfo.variants.map((variant)=>{
+                return(
+                  variant.id
+                )
+            }),
+              placeholders: reqBody.printAreas.map((area)=>{
+                  return(
+                    {
+                      position: area,
+                      images: [
+                          {
+                            id: imageUpload.id, 
+                            x: reqBody.x, 
+                            y: reqBody.y, 
+                            scale: reqBody.scale,
+                            angle: 0,
+                          }
+                      ]
+                    }
+                  )
+            })
+              
+            }
+          ]
+      })
+    })
+    const {images, variants, id} = await createProductResponse.json()
+    return res.json({
+      images, variants, id
+    })
+  } catch (error) {
+    return res.status(500).json({
+      data: error.message
+    })
+  }
+})
 
 async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.6){
   try {
