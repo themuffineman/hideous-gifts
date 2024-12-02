@@ -1,5 +1,5 @@
 import csv from "csvtojson/v2/index.js";
-import FormData from 'form-data';
+import FormData from "form-data";
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
@@ -92,14 +92,17 @@ app.post("/api/generate-image", async (req, res) => {
     }
     if (Array.isArray(generatedImage)) {
       generatedImage = generatedImage[0];
-      console.log("New gen iamge:", generatedImage)
+      console.log("New gen iamge:", generatedImage);
     }
     const watermarkedImage = await applyWatermark(
       generatedImage,
       "hideous-gifts-logo.svg"
     );
-  
-    return res.json({ previewUrl: watermarkedImage, productUrl: generatedImage });
+
+    return res.json({
+      previewUrl: watermarkedImage,
+      productUrl: generatedImage,
+    });
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ error: err.message });
@@ -259,162 +262,172 @@ app.post("/api/text2image", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
-app.post("/api/create-product", async (req,res)=>{
+app.post("/api/create-product", async (req, res) => {
   try {
-    const reqBody = req.body
-    const variantInfoResponse = await fetch(`https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,{
-      method:"GET",
-      headers: {
-        "Authorization": reqBody.token
+    const reqBody = req.body;
+    const variantInfoResponse = await fetch(
+      `https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: reqBody.token,
+        },
       }
-    })
-    const variantInfo = await variantInfoResponse.json()
-    const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": reqBody.token
-      },
-      body: JSON.stringify({
-        file_name: reqBody.fileName,
-        url: reqBody.imageUrl
-      })
-    })
-    const imageUpload = await imageUploadResponse.json()
+    );
+    const variantInfo = await variantInfoResponse.json();
+    const imageUploadResponse = await fetch(
+      "https://api.printify.com/v1/uploads/images.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: reqBody.token,
+        },
+        body: JSON.stringify({
+          file_name: reqBody.fileName,
+          url: reqBody.imageUrl,
+        }),
+      }
+    );
+    const imageUpload = await imageUploadResponse.json();
 
-    const createProductResponse = await fetch("https://api.printify.com/v1/shops/14354198/products.json", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": reqBody.token
-      },
-      body: JSON.stringify({
-        title: reqBody.productName,
-        description: reqBody.productName,
-        blueprint_id: reqBody.blueprintId,
-        print_provider_id: reqBody.providerId,
-        variants: variantInfo.variants.map((variant)=>{
-          return (
-            {
+    const createProductResponse = await fetch(
+      "https://api.printify.com/v1/shops/14354198/products.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: reqBody.token,
+        },
+        body: JSON.stringify({
+          title: reqBody.productName,
+          description: reqBody.productName,
+          blueprint_id: reqBody.blueprintId,
+          print_provider_id: reqBody.providerId,
+          variants: variantInfo.variants.map((variant) => {
+            return {
               id: variant.id,
               price: reqBody.price,
-              is_enabled: true
-            }
-          )
-      }),
+              is_enabled: true,
+            };
+          }),
           print_areas: [
             {
-              variant_ids: variantInfo.variants.map((variant)=>{
-                return(
-                  variant.id
-                )
-            }),
-              placeholders: reqBody.printAreas.map((area)=>{
-                  return(
+              variant_ids: variantInfo.variants.map((variant) => {
+                return variant.id;
+              }),
+              placeholders: reqBody.printAreas.map((area) => {
+                return {
+                  position: area,
+                  images: [
                     {
-                      position: area,
-                      images: [
-                          {
-                            id: imageUpload.id, 
-                            x: reqBody.x, 
-                            y: reqBody.y, 
-                            scale: reqBody.scale,
-                            angle: 0,
-                          }
-                      ]
-                    }
-                  )
-            })
-              
-            }
-          ]
-      })
-    })
-    const {images, variants, id} = await createProductResponse.json()
-    return res.json({
-      images, variants, id
-    })
-  } catch (error) {
-    return res.status(500).json({
-      data: error.message
-    })
-  }
-})
-app.post("/api/create-product-2", async (req,res)=>{
-  try {
-    const reqBody = req.body
-    const variantInfoResponse = await fetch(`https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,{
-      method:"GET",
-      headers: {
-        "Authorization": reqBody.token
+                      id: imageUpload.id,
+                      x: reqBody.x,
+                      y: reqBody.y,
+                      scale: reqBody.scale,
+                      angle: 0,
+                    },
+                  ],
+                };
+              }),
+            },
+          ],
+        }),
       }
-    })
-    const variantInfo = await variantInfoResponse.json()
-    const imageUploadResponse = await fetch("https://api.printify.com/v1/uploads/images.json", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": reqBody.token
-      },
-      body: JSON.stringify({
-        file_name: reqBody.fileName,
-        url: reqBody.imageUrl
-      })
-    })
-    const imageUpload = await imageUploadResponse.json()
-
-    const createProductResponse = await fetch("https://api.printify.com/v1/shops/14354198/products.json", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": reqBody.token
-      },
-      body: JSON.stringify({
-        title: reqBody.productName,
-        description: reqBody.productName,
-        blueprint_id: reqBody.blueprintId,
-        print_provider_id: reqBody.providerId,
-        variants: reqBody.price,
-        print_areas: [
-          {
-            variant_ids: variantInfo.variants.map((variant)=>{
-              return(
-                variant.id
-              )
-          }),
-            placeholders: reqBody.printAreas.map((area)=>{
-                return(
-                  {
-                    position: area,
-                    images: [
-                        {
-                          id: imageUpload.id, 
-                          x: reqBody.x, 
-                          y: reqBody.y, 
-                          scale: reqBody.scale,
-                          angle: 0,
-                        }
-                    ]
-                  }
-                )
-          })
-            
-          }
-        ]
-      })
-    })
-    const {images, variants, id} = await createProductResponse.json()
+    );
+    const { images, variants, id } = await createProductResponse.json();
     return res.json({
-      images, variants, id
-    })
+      images,
+      variants,
+      id,
+    });
   } catch (error) {
     return res.status(500).json({
-      data: error.message
-    })
+      data: error.message,
+    });
   }
-})
+});
+app.post("/api/create-product-2", async (req, res) => {
+  try {
+    const reqBody = req.body;
+    const variantInfoResponse = await fetch(
+      `https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: reqBody.token,
+        },
+      }
+    );
+    const variantInfo = await variantInfoResponse.json();
+    const imageUploadResponse = await fetch(
+      "https://api.printify.com/v1/uploads/images.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: reqBody.token,
+        },
+        body: JSON.stringify({
+          file_name: reqBody.fileName,
+          url: reqBody.imageUrl,
+        }),
+      }
+    );
+    const imageUpload = await imageUploadResponse.json();
 
-async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.6){
+    const createProductResponse = await fetch(
+      "https://api.printify.com/v1/shops/14354198/products.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: reqBody.token,
+        },
+        body: JSON.stringify({
+          title: reqBody.productName,
+          description: reqBody.productName,
+          blueprint_id: reqBody.blueprintId,
+          print_provider_id: reqBody.providerId,
+          variants: reqBody.price,
+          print_areas: [
+            {
+              variant_ids: variantInfo.variants.map((variant) => {
+                return variant.id;
+              }),
+              placeholders: reqBody.printAreas.map((area) => {
+                return {
+                  position: area,
+                  images: [
+                    {
+                      id: imageUpload.id,
+                      x: reqBody.x,
+                      y: reqBody.y,
+                      scale: reqBody.scale,
+                      angle: 0,
+                    },
+                  ],
+                };
+              }),
+            },
+          ],
+        }),
+      }
+    );
+    const { images, variants, id } = await createProductResponse.json();
+    return res.json({
+      images,
+      variants,
+      id,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      data: error.message,
+    });
+  }
+});
+
+async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.6) {
   try {
     // Initialize ImageKit instance
     const imagekit = new ImageKit({
@@ -450,8 +463,8 @@ async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.6){
     ctx.globalAlpha = watermarkOpacity;
 
     // Scatter the watermark with fewer instances (e.g., only 2 per row/column)
-    const horizontalSpacing = image.width / 2; // Divide image width into two segments
-    const verticalSpacing = image.height / 2; // Divide image height into two segments
+    const horizontalSpacing = image.width / 4; // Divide image width into two segments
+    const verticalSpacing = image.height / 4; // Divide image height into two segments
     for (let y = 0; y < image.height; y += verticalSpacing) {
       for (let x = 0; x < image.width; x += horizontalSpacing) {
         ctx.drawImage(svgImage, x, y, watermarkWidth, watermarkHeight);
@@ -478,8 +491,3 @@ async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.6){
     throw error;
   }
 }
-
-
-
-
-
