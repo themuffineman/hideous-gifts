@@ -427,7 +427,7 @@ app.post("/api/create-product-2", async (req, res) => {
   }
 });
 
-async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.6) {
+async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.5) {
   try {
     // Initialize ImageKit instance
     const imagekit = new ImageKit({
@@ -455,7 +455,7 @@ async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.6) {
     );
 
     // Calculate size of each watermark (scale to 40% of the image width)
-    const watermarkWidth = image.width * 0.4; // Adjust as needed
+    const watermarkWidth = image.width * 0.3; // Adjust as needed
     const aspectRatio = svgImage.width / svgImage.height;
     const watermarkHeight = watermarkWidth / aspectRatio;
 
