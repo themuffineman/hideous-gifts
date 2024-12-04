@@ -426,9 +426,10 @@ app.post("/api/create-product-2", async (req, res) => {
     });
   }
 });
-app.post("api/calculate-shipping", async (req, res) => {
+app.post("/api/calculate-shipping", async (req, res) => {
   try {
     const reqBody = req.body;
+    console.log("calculating shipping...");
     const printifyRes = await fetch(
       "https://api.printify.com/v1/shops/14354198/orders/shipping.json",
       {
