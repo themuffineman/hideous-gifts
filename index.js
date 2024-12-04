@@ -426,6 +426,27 @@ app.post("/api/create-product-2", async (req, res) => {
     });
   }
 });
+app.post("api/calculate-shipping", async (req, res) => {
+  try {
+    const reqBody = req.body;
+    const printifyRes = await fetch(
+      "https://api.printify.com/v1/shops/14354198/orders/shipping.json",
+      {
+        method: "POST",
+        body: JSON.stringify(reqBody),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${process.env.BEARERTOKEN}`,
+        },
+      }
+    );
+    const printifyResBody = await printifyRes.json();
+    return res.sendStatus(200).json(printifyResBody);
+  } catch (err) {
+    console.error("Error calculating shipping: ", err.message);
+    return res.sendStatus(500);
+  }
+});
 
 async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.5) {
   try {
