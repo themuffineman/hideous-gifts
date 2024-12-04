@@ -437,12 +437,14 @@ app.post("/api/calculate-shipping", async (req, res) => {
         body: JSON.stringify(reqBody),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${process.env.BEARERTOKEN}`,
+          Authorization: req.headers.authorization,
         },
       }
     );
+    console.log("received printify res");
     const printifyResBody = await printifyRes.json();
-    return res.sendStatus(200).json(printifyResBody);
+    console.log("converted to object");
+    return res.json(printifyResBody);
   } catch (err) {
     console.error("Error calculating shipping: ", err.message);
     return res.sendStatus(500);
