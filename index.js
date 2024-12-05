@@ -317,18 +317,33 @@ app.post("/api/create-product", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                return {
-                  position: area,
-                  images: [
-                    {
-                      id: imageUpload.id,
-                      x: reqBody.x,
-                      y: reqBody.y,
-                      scale: reqBody.scale,
-                      angle: 0,
-                    },
-                  ],
-                };
+                if (area !== "front") {
+                  return {
+                    position: area,
+                    images: [
+                      {
+                        id: "6751df108e4ed254fc7d1019",
+                        x: reqBody.x,
+                        y: reqBody.y,
+                        scale: reqBody.scale,
+                        angle: 0,
+                      },
+                    ],
+                  };
+                } else {
+                  return {
+                    position: area,
+                    images: [
+                      {
+                        id: imageUpload.id,
+                        x: reqBody.x,
+                        y: reqBody.y,
+                        scale: reqBody.scale,
+                        angle: 0,
+                      },
+                    ],
+                  };
+                }
               }),
             },
           ],
@@ -396,18 +411,33 @@ app.post("/api/create-product-2", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                return {
-                  position: area,
-                  images: [
-                    {
-                      id: imageUpload.id,
-                      x: reqBody.x,
-                      y: reqBody.y,
-                      scale: reqBody.scale,
-                      angle: 0,
-                    },
-                  ],
-                };
+                if (area !== "front") {
+                  return {
+                    position: area,
+                    images: [
+                      {
+                        id: imageUpload.id,
+                        x: reqBody.x,
+                        y: reqBody.y,
+                        scale: reqBody.scale,
+                        angle: 0,
+                      },
+                    ],
+                  };
+                } else {
+                  return {
+                    position: area,
+                    images: [
+                      {
+                        id: imageUpload.id,
+                        x: reqBody.x,
+                        y: reqBody.y,
+                        scale: reqBody.scale,
+                        angle: 0,
+                      },
+                    ],
+                  };
+                }
               }),
             },
           ],
