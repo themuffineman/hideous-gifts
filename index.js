@@ -472,6 +472,7 @@ app.post("/api/calculate-shipping", async (req, res) => {
       }
     );
     const printifyResBody = await printifyRes.json();
+    console.log("Shipping Response: ", printifyResBody);
     return res.json(printifyResBody);
   } catch (err) {
     console.error("Error calculating shipping: ", err.message);
