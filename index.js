@@ -351,6 +351,7 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const { images, variants, id } = await createProductResponse.json();
+    console.log("Images: ", images, "Variants: ", variants, "Id: ", id);
     return res.json({
       images,
       variants,
@@ -479,7 +480,6 @@ app.post("/api/calculate-shipping", async (req, res) => {
     return res.sendStatus(500);
   }
 });
-
 async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.5) {
   try {
     // Initialize ImageKit instance
