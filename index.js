@@ -350,12 +350,12 @@ app.post("/api/create-product", async (req, res) => {
         }),
       }
     );
-    const { images, variants, id } = await createProductResponse.json();
-    console.log("Images: ", images, "Variants: ", variants, "Id: ", id);
+    const productResponse = await createProductResponse.json();
+    console.log("Product res: ", productResponse);
     return res.json({
-      images,
-      variants,
-      id,
+      images: productResponse.images,
+      variants: productResponse.variants,
+      id: productResponse.id,
     });
   } catch (error) {
     return res.status(500).json({
