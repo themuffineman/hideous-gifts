@@ -308,7 +308,7 @@ app.post("/api/create-product", async (req, res) => {
             return {
               id: variant.id,
               price: reqBody.price,
-              is_enabled: true,
+              // is_enabled: true,
             };
           }),
           print_areas: [
