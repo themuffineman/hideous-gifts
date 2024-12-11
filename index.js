@@ -304,13 +304,14 @@ app.post("/api/create-product", async (req, res) => {
           description: reqBody.productName,
           blueprint_id: reqBody.blueprintId,
           print_provider_id: reqBody.providerId,
-          variants: variantInfo.variants.slice(0, 98).map((variant) => ({
+          variants: variantInfo.variants.map((variant) => ({
             id: variant.id,
             price: reqBody.price,
+            is_enabled: false,
           })),
           print_areas: [
             {
-              variant_ids: variantInfo.variants.slice(0, 98).map((variant) => {
+              variant_ids: variantInfo.variants.map((variant) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
