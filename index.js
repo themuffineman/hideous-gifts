@@ -276,6 +276,7 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const variantInfo = await variantInfoResponse.json();
+    console.log("variantinfo: ", variantInfo);
     const imageUploadResponse = await fetch(
       "https://api.printify.com/v1/uploads/images.json",
       {
