@@ -265,6 +265,7 @@ app.post("/api/text2image", async (req, res) => {
 app.post("/api/create-product", async (req, res) => {
   try {
     const reqBody = req.body;
+    console.log("prod 1 api call");
     const variantInfoResponse = await fetch(
       `https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,
       {
@@ -364,6 +365,7 @@ app.post("/api/create-product", async (req, res) => {
 app.post("/api/create-product-2", async (req, res) => {
   try {
     const reqBody = req.body;
+    console.log("Prod 2 api call");
     const variantInfoResponse = await fetch(
       `https://api.printify.com/v1/catalog/blueprints/${reqBody.blueprintId}/print_providers/${reqBody.providerId}/variants.json`,
       {
