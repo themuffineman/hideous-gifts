@@ -276,7 +276,7 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const variantInfo = await variantInfoResponse.json();
-    console.log("variantinfo: ", variantInfo.variants);
+    console.log("variantinfo: ", variantInfo.variants[0]);
     const imageUploadResponse = await fetch(
       "https://api.printify.com/v1/uploads/images.json",
       {
@@ -351,7 +351,7 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const productResponse = await createProductResponse.json();
-    console.log("Product res 1: ", productResponse.images[0], productResponse.variants[0], productResponse.id);
+    console.log("Product Res 1: ", "images: ",productResponse.images[0], "variants: ",productResponse.variants[0], "id: ",productResponse.id)
     return res.json({
       images: productResponse.images,
       variants: productResponse.variants,
@@ -414,20 +414,6 @@ app.post("/api/create-product-2", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                if (area !== "front") {
-                  return {
-                    position: area,
-                    images: [
-                      {
-                        id: "6751df108e4ed254fc7d1019",
-                        x: reqBody.x,
-                        y: reqBody.y,
-                        scale: reqBody.scale,
-                        angle: 0,
-                      },
-                    ],
-                  };
-                } else {
                   return {
                     position: area,
                     images: [
@@ -439,8 +425,7 @@ app.post("/api/create-product-2", async (req, res) => {
                         angle: 0,
                       },
                     ],
-                  };
-                }
+                  }
               }),
             },
           ],
@@ -448,7 +433,7 @@ app.post("/api/create-product-2", async (req, res) => {
       }
     );
     const { images, variants, id } = await createProductResponse.json();
-    console.log("Product Res 2: ", images[0], variants[0], id)
+    console.log("Product Res 2: ", "images: ",images[0], "variants: ",variants[0], "id: ",id)
     return res.json({
       images,
       variants,
