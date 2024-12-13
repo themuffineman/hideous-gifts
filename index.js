@@ -317,20 +317,6 @@ app.post("/api/create-product", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                if (area !== "front") {
-                  return {
-                    position: area,
-                    images: [
-                      {
-                        id: "6751df108e4ed254fc7d1019",
-                        x: reqBody.x,
-                        y: reqBody.y,
-                        scale: reqBody.scale,
-                        angle: 0,
-                      },
-                    ],
-                  };
-                } else {
                   return {
                     position: area,
                     images: [
@@ -343,7 +329,6 @@ app.post("/api/create-product", async (req, res) => {
                       },
                     ],
                   };
-                }
               }),
             },
           ],
@@ -377,7 +362,7 @@ app.post("/api/create-product-2", async (req, res) => {
       }
     );
     const variantInfo = await variantInfoResponse.json();
-    console.log("variantinfo call 2: ", variantInfo.variants);
+    console.log("variantinfo call 2: ", variantInfo.variants[0]);
     const imageUploadResponse = await fetch(
       "https://api.printify.com/v1/uploads/images.json",
       {
