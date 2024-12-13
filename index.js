@@ -336,13 +336,14 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const productResponse = await createProductResponse.json();
-    console.log("Product Res 1: ", "images: ",productResponse.images[0], "variants: ",productResponse.variants[0], "id: ",productResponse.id)
+    console.log("Product Res 1: ", "images: ",productResponse.images, "variants: ",productResponse.variants[0], "id: ",productResponse.id)
     return res.json({
       images: productResponse.images,
       variants: productResponse.variants,
       id: productResponse.id,
     });
   } catch (error) {
+    console.error(error.message)
     return res.status(500).json({
       data: error.message,
     });
@@ -425,6 +426,7 @@ app.post("/api/create-product-2", async (req, res) => {
       id,
     });
   } catch (error) {
+    console.error(error.message)
     return res.status(500).json({
       data: error.message,
     });
