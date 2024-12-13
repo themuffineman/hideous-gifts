@@ -309,7 +309,7 @@ app.post("/api/create-product", async (req, res) => {
           variants: variantInfo.variants.map((variant) => ({
             id: variant.id,
             price: reqBody.price,
-            is_enabled: true,
+            is_enabled: false,
           })),
           print_areas: [
             {
