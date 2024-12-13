@@ -351,7 +351,7 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const productResponse = await createProductResponse.json();
-    console.log("Product res: ", productResponse);
+    console.log("Product res 1: ", productResponse.images[0], productResponse.variants[0], productResponse.id);
     return res.json({
       images: productResponse.images,
       variants: productResponse.variants,
@@ -448,6 +448,7 @@ app.post("/api/create-product-2", async (req, res) => {
       }
     );
     const { images, variants, id } = await createProductResponse.json();
+    console.log("Product Res 2: ", images[0], variants[0], id)
     return res.json({
       images,
       variants,
