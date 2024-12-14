@@ -1,4 +1,4 @@
-import csv from "csvtojson/v2/index.js";
+8import csv from "csvtojson/v2/index.js";
 import FormData from "form-data";
 import express from "express";
 import cors from "cors";
@@ -423,7 +423,7 @@ app.post("/api/create-product-2", async (req, res) => {
       }
     );
     const { images, variants, id } = await createProductResponse.json();
-    console.log("Product Res 2: ", "images: ",images, "variants: ",variants[0], "id: ",id)
+   // console.log("Product Res 2: ", "images: ",images, "variants: ",variants[0], "id: ",id)
     return res.json({
       images,
       variants,
