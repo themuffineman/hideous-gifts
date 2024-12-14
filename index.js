@@ -399,9 +399,11 @@ app.post("/api/create-product-2", async (req, res) => {
           print_areas: [
             {
               variant_ids: reqBody.price.map((variant) => {
+                console.log("mapping on variants")
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
+                console.log("mapping on areas")
                   return {
                     position: area,
                     images: [
