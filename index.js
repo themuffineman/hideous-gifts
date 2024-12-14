@@ -423,7 +423,7 @@ app.post("/api/create-product-2", async (req, res) => {
       }
     );
     const productResponse = await createProductResponse.json();
-   // console.log("Product Res 2: ", "images: ",images, "variants: ",variants[0], "id: ",id)
+    console.log("Product Res 2: ", productResponse)
     return res.json({
       images: productResponse.images,
       variants: productResponse.variants,
