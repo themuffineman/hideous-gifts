@@ -412,7 +412,7 @@ app.post("/api/create-product-2", async (req, res) => {
               placeholders: reqBody.printAreas.map((area) => {
                 if (area === "front") {
                   return {
-                    position: area,
+                    position: "front",
                     images: [
                       {
                         id: imageUpload.id,
