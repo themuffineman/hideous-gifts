@@ -276,7 +276,7 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const variantInfo = await variantInfoResponse.json();
-    console.log("variantinfo: ", variantInfo.variants[0]);
+    console.log("variantinfo map 0: ", variantInfo.variants[0]);
     const imageUploadResponse = await fetch(
       "https://api.printify.com/v1/uploads/images.json",
       {
@@ -306,17 +306,22 @@ app.post("/api/create-product", async (req, res) => {
           description: reqBody.productName,
           blueprint_id: reqBody.blueprintId,
           print_provider_id: reqBody.providerId,
-          variants: variantInfo.variants.map((variant) => ({
-            id: variant.id,
-            price: reqBody.price,
-            is_enabled: false,
-          })),
+          variants: variantInfo.variants.map((variant) => {
+            console.log("Mapping on Variants 1")
+            return {
+              id: variant.id,
+              price: reqBody.price,
+              is_enabled: false,
+            }
+          }),
           print_areas: [
             {
               variant_ids: variantInfo.variants.map((variant) => {
+                console.log("Mapping on Variants 2")
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
+                console.log("Mapping on Variants 3")
                 return {
                   position: area,
                   images: [
