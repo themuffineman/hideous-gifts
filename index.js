@@ -307,7 +307,7 @@ app.post("/api/create-product", async (req, res) => {
           blueprint_id: reqBody.blueprintId,
           print_provider_id: reqBody.providerId,
           variants: variantInfo.variants.map((variant) => {
-            console.log("Mapping on Variants 1")
+            console.log("Mapping on Variants 1: ", variant.id)
             return {
               id: variant.id,
               price: reqBody.price,
@@ -342,13 +342,7 @@ app.post("/api/create-product", async (req, res) => {
     );
     const productResponse = await createProductResponse.json();
     console.log(
-      "Product Res 1: ",
-      "images: ",
-      productResponse.images,
-      "variants: ",
-      productResponse.variants[0],
-      "id: ",
-      productResponse.id
+      "Product Res 1: ", productResponse
     );
     return res.json({
       images: productResponse.images,
