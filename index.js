@@ -409,8 +409,8 @@ app.post("/api/create-product-2", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                if (reqBody.blueprintId === 1381) {
-                  console.log("Underwear")
+                if (reqBody.blueprintId === 1381 || reqBody.blueprintId === 376) {
+                  console.log("Underwear & Socks")
                   return {
                     position: area,
                     images: [
