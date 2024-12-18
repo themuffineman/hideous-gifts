@@ -422,12 +422,26 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                } else {
+                } else if(area === "back" && req.bluprintId !== 1381 ){
                   return {
                     position: area,
                     images: [
                       {
-                        id: imageUpload.id,
+                        id: "6751df108e4ed254fc7d1019",
+                        x: reqBody.x,
+                        y: reqBody.y,
+                        scale: reqBody.scale,
+                        angle: 0,
+                      },
+                    ],
+                  };
+                }
+                else{
+                  return {
+                    position: area,
+                    images: [
+                      {
+                        id: area,
                         x: reqBody.x,
                         y: reqBody.y,
                         scale: reqBody.scale,
