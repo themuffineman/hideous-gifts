@@ -427,7 +427,7 @@ app.post("/api/create-product-2", async (req, res) => {
                     position: area,
                     images: [
                       {
-                        id: "6751df108e4ed254fc7d1019",
+                        id: imageUpload.id,
                         x: reqBody.x,
                         y: reqBody.y,
                         scale: reqBody.scale,
