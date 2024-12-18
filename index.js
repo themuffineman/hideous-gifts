@@ -409,7 +409,8 @@ app.post("/api/create-product-2", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                if (area === "front") {
+                if (req.blueprintId === 1381) {
+                  console.log("Underwear")
                   return {
                     position: area,
                     images: [
@@ -422,12 +423,12 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                } else if(area === "back" && req.blueprintId !== 1381 ){
+                } else if(req.blueprintId !== 1381 && area === "front" ){
                   return {
                     position: area,
                     images: [
                       {
-                        id: "6751df108e4ed254fc7d1019",
+                        id: imageUpload.id,
                         x: reqBody.x,
                         y: reqBody.y,
                         scale: reqBody.scale,
@@ -436,12 +437,12 @@ app.post("/api/create-product-2", async (req, res) => {
                     ],
                   };
                 }
-                else if(req.blueprintId === 1381){
+                else if( req.blueprintId !== 1381 && area === "back"){
                   return {
                     position: area,
                     images: [
                       {
-                        id: imageUpload.id,
+                        id: "6751df108e4ed254fc7d1019",
                         x: reqBody.x,
                         y: reqBody.y,
                         scale: reqBody.scale,
