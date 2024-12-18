@@ -422,7 +422,7 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                } else if(area === "back" && req.bluprintId !== 1381 ){
+                } else if(area === "back" && req.blueprintId !== 1381 ){
                   return {
                     position: area,
                     images: [
