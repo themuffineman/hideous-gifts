@@ -436,7 +436,7 @@ app.post("/api/create-product-2", async (req, res) => {
                     ],
                   };
                 }
-                else{
+                else if(req.blueprintId === 1381){
                   return {
                     position: area,
                     images: [
