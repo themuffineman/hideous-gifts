@@ -409,7 +409,7 @@ app.post("/api/create-product-2", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                if (req.blueprintId === 1381) {
+                if (reqBody.blueprintId === 1381) {
                   console.log("Underwear")
                   return {
                     position: area,
@@ -423,7 +423,7 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                } else if(req.blueprintId !== 1381 && area === "front" ){
+                } else if(reqBody.blueprintId !== 1381 && area === "front" ){
                   return {
                     position: area,
                     images: [
@@ -437,7 +437,7 @@ app.post("/api/create-product-2", async (req, res) => {
                     ],
                   };
                 }
-                else if( req.blueprintId !== 1381 && area === "back"){
+                else if( reqBody.blueprintId !== 1381 && area === "back"){
                   return {
                     position: area,
                     images: [
