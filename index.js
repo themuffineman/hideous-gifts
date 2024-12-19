@@ -409,7 +409,7 @@ app.post("/api/create-product-2", async (req, res) => {
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                if (reqBody.blueprintId === 1381 || reqBody.blueprintId === 376) {
+                if (reqBody.blueprintId === 1381 and area !== "back") {
                   console.log("Underwear & Socks")
                   return {
                     position: area,
@@ -423,7 +423,22 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                } else if(reqBody.blueprintId !== 1381 && area === "front" ){
+                }else if (reqBody.blueprintId === 1381 && area === "back") {
+                  console.log("Underwear & Socks")
+                  return {
+                    position: area,
+                    images: [
+                      {
+                        id: imageUpload.id,
+                        x: 0.5,
+                        y: 0.9,
+                        scale: 0.7,
+                        angle: 0,
+                      },
+                    ],
+                  };
+                }else if (reqBody.blueprintId === 376) {
+                  console.log("Underwear & Socks")
                   return {
                     position: area,
                     images: [
@@ -436,8 +451,21 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                }
-                else if( reqBody.blueprintId !== 1381 && area === "back"){
+                } 
+                else if(reqBody.blueprintId !== 1381 && area === "front" ){
+                  return {
+                    position: area,
+                    images: [
+                      {
+                        id: imageUpload.id,
+                        x: reqBody.x,
+                        y: reqBody.y,
+                        scale: reqBody.scale,
+                        angle: 0,
+                      },
+                    ],
+                  };
+                } else if( reqBody.blueprintId !== 1381 && area === "back"){
                   return {
                     position: area,
                     images: [
