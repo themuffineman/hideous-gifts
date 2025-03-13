@@ -530,9 +530,7 @@ async function compressImage(url) {
       headers: {
         Authorization:
           "Basic " +
-          Buffer.from("api:q6KJSStnbQP875TkRZHRPStrfgHmwC9Q").toString(
-            "base64"
-          ),
+          Buffer.from(`api:${process.env.TINIFY_API_KEY}`).toString("base64"),
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
