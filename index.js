@@ -524,6 +524,7 @@ app.post("/api/calculate-shipping", async (req, res) => {
   }
 });
 async function compressImage(url) {
+  console.log("Compressing image:", url);
   try {
     const response = await fetch("https://api.tinify.com/shrink", {
       method: "POST",
@@ -545,6 +546,7 @@ async function compressImage(url) {
       throw Error("Failed to compress image");
     }
     const { output } = await response.json();
+    console.log("Image compressed successfully:", output.url);
     return output.url;
   } catch (error) {
     throw error;
