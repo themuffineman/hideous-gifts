@@ -37,6 +37,8 @@ app.post("/api/generate-image", async (req, res) => {
   try {
     const { uploadedImage, targetImage } = req.body;
     console.log("Received Request:", uploadedImage, targetImage);
+    const compressedUploadedImage = await compressImage(uploadedImage);
+    const compressedTargetImage = await compressImage(targetImage);
 
     const apiResponse = await fetch(
       "https://api.imagepipeline.io/faceswap/v1",
@@ -47,8 +49,8 @@ app.post("/api/generate-image", async (req, res) => {
           "API-Key": process.env.API_KEY,
         },
         body: JSON.stringify({
-          input_face: uploadedImage,
-          input_image: targetImage,
+          input_face: compressedUploadedImage,
+          input_image: compressedTargetImage,
         }),
       }
     );
@@ -307,21 +309,21 @@ app.post("/api/create-product", async (req, res) => {
           blueprint_id: reqBody.blueprintId,
           print_provider_id: reqBody.providerId,
           variants: variantInfo.variants.map((variant) => {
-            console.log("Mapping on Variants 1: ", variant.id)
+            console.log("Mapping on Variants 1: ", variant.id);
             return {
               id: variant.id,
               price: reqBody.price,
               is_enabled: false,
-            }
+            };
           }),
           print_areas: [
             {
               variant_ids: variantInfo.variants.map((variant) => {
-                console.log("Mapping on Variants 2")
+                console.log("Mapping on Variants 2");
                 return variant.id;
               }),
               placeholders: reqBody.printAreas.map((area) => {
-                console.log("Mapping on Variants 3")
+                console.log("Mapping on Variants 3");
                 return {
                   position: area,
                   images: [
@@ -341,9 +343,7 @@ app.post("/api/create-product", async (req, res) => {
       }
     );
     const productResponse = await createProductResponse.json();
-    console.log(
-      "Product Res 1: ", productResponse
-    );
+    console.log("Product Res 1: ", productResponse);
     return res.json({
       images: productResponse.images,
       variants: productResponse.variants,
@@ -410,7 +410,7 @@ app.post("/api/create-product-2", async (req, res) => {
               }),
               placeholders: reqBody.printAreas.map((area) => {
                 if (reqBody.blueprintId === 1381 && area !== "back") {
-                  console.log("Underwear & Socks")
+                  console.log("Underwear & Socks");
                   return {
                     position: area,
                     images: [
@@ -423,8 +423,8 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                }else if (reqBody.blueprintId === 1381 && area === "back") {
-                  console.log("Underwear & Socks")
+                } else if (reqBody.blueprintId === 1381 && area === "back") {
+                  console.log("Underwear & Socks");
                   return {
                     position: area,
                     images: [
@@ -437,8 +437,8 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                }else if (reqBody.blueprintId === 376) {
-                  console.log("Underwear & Socks")
+                } else if (reqBody.blueprintId === 376) {
+                  console.log("Underwear & Socks");
                   return {
                     position: area,
                     images: [
@@ -451,8 +451,7 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                } 
-                else if(reqBody.blueprintId !== 1381 && area === "front" ){
+                } else if (reqBody.blueprintId !== 1381 && area === "front") {
                   return {
                     position: area,
                     images: [
@@ -465,7 +464,7 @@ app.post("/api/create-product-2", async (req, res) => {
                       },
                     ],
                   };
-                } else if( reqBody.blueprintId !== 1381 && area === "back"){
+                } else if (reqBody.blueprintId !== 1381 && area === "back") {
                   return {
                     position: area,
                     images: [
@@ -524,6 +523,35 @@ app.post("/api/calculate-shipping", async (req, res) => {
     return res.sendStatus(500);
   }
 });
+async function compressImage(url) {
+  try {
+    const response = await fetch("https://api.tinify.com/shrink", {
+      method: "POST",
+      headers: {
+        Authorization:
+          "Basic " +
+          Buffer.from("api:q6KJSStnbQP875TkRZHRPStrfgHmwC9Q").toString(
+            "base64"
+          ),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        source: {
+          url,
+        },
+      }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("Error compressing image:", error);
+      throw Error("Failed to compress image");
+    }
+    const { output } = await response.json();
+    return output.url;
+  } catch (error) {
+    throw error;
+  }
+}
 async function applyWatermark(imageUrl, watermarkPath, watermarkOpacity = 0.5) {
   try {
     // Initialize ImageKit instance
