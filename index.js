@@ -37,8 +37,8 @@ app.post("/api/generate-image", async (req, res) => {
   try {
     const { uploadedImage, targetImage } = req.body;
     console.log("Received Request:", uploadedImage, targetImage);
-    const compressedUploadedImage = await compressImage(uploadedImage);
-    const compressedTargetImage = await compressImage(targetImage);
+    // const compressedUploadedImage = await compressImage(uploadedImage);
+    // const compressedTargetImage = await compressImage(targetImage);
 
     const apiResponse = await fetch(
       "https://api.imagepipeline.io/faceswap/v1",
@@ -49,8 +49,8 @@ app.post("/api/generate-image", async (req, res) => {
           "API-Key": process.env.API_KEY,
         },
         body: JSON.stringify({
-          input_face: compressedUploadedImage,
-          input_image: compressedTargetImage,
+          input_face: uploadedImage,
+          input_image: targetImage,
         }),
       }
     );
